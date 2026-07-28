@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-neutral-950 text-neutral-100">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZipVault - Zero-Server ZIP Inspector</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="h-full flex flex-col font-sans border-neutral-800">
+  <!-- Header -->
+  <header class="border-b border-neutral-800 bg-neutral-900/50 backdrop-blur-md px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center space-x-3">
+      <i data-lucide="archive" class="w-6 h-6 text-emerald-400"></i>
+      <span class="font-bold text-lg tracking-wide text-white">ZipVault</span>
+    </div>
+    <div class="flex items-center space-x-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
+      <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+      <span class="text-xs font-mono text-emerald-400">Engine Online</span>
+    </div>
+  </header>
+
+  <!-- Hero Content -->
+  <main class="flex-1 flex flex-col items-center justify-center px-4 text-center">
+    <div class="max-w-2xl space-y-6">
+      <div class="inline-flex items-center gap-2 px-3 py-1 bg-neutral-900 border border-neutral-800 rounded-lg text-xs font-mono text-neutral-400">
+        <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+        100% Client-Side Processing • Zero Server Uploads
+      </div>
+
+      <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-white">
+        Inspect & Extract Archives <br/>
+        <span class="text-neutral-400">Directly in Your Browser</span>
+      </h1>
+
+      <p class="text-neutral-400 text-base sm:text-lg">
+        ZipVault uses browser-native memory parsing via Web APIs to unpack, inspect, and extract ZIP archives safely without sending a single byte across the wire.
+      </p>
+
+      <div class="pt-4 flex items-center justify-center gap-4">
+        <a href="/explorer" class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-neutral-950 font-semibold px-6 py-3 rounded-lg transition-colors">
+          <i data-lucide="folder-open" class="w-5 h-5"></i>
+          Launch Workspace
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
