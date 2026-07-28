@@ -7,7 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    /* Custom marquee & pulse keyframes */
+    /* Custom marquee */
     @keyframes marquee {
       0% { transform: translateX(0%); }
       100% { transform: translateX(-50%); }
@@ -20,13 +20,21 @@
     .animate-marquee:hover {
       animation-play-state: paused;
     }
-    /* Smooth reveal transitions */
-    .fade-up {
+
+    /* Transition utilities */
+    .fade-out {
       opacity: 0;
-      transform: translateY(12px);
-      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: scale(0.97);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      pointer-events: none;
     }
-    .fade-up.visible {
+    
+    .fade-in {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .fade-in.visible {
       opacity: 1;
       transform: translateY(0);
     }
@@ -34,91 +42,12 @@
 </head>
 <body class="min-h-full bg-black flex flex-col font-sans antialiased overflow-x-hidden">
 
-  <!-- Scrolling Top Status Bar -->
-  <div class="w-full border-b border-neutral-900 bg-neutral-950/80 backdrop-blur text-[11px] font-mono text-neutral-500 overflow-hidden whitespace-nowrap py-1.5 flex items-center">
-    <div class="animate-marquee flex items-center gap-8">
-      <span class="flex items-center gap-2">
-        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-        <span class="text-neutral-400">ZipVault Core:</span> v1.0.0 Online
-      </span>
-      <span>•</span>
-      <span>→ Client Memory Processing: <span class="text-emerald-400">Active (JSZip Engine)</span></span>
-      <span>•</span>
-      <span>→ Server Uploads: <span class="text-neutral-400">0 Bytes Sent</span></span>
-      <span>•</span>
-      <span>→ Privacy Audit: <span class="text-emerald-400">100% Local Browser Sandbox</span></span>
-      <span>•</span>
-      <!-- Repeated set for seamless loop -->
-      <span class="flex items-center gap-2">
-        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-        <span class="text-neutral-400">ZipVault Core:</span> v1.0.0 Online
-      </span>
-      <span>•</span>
-      <span>→ Client Memory Processing: <span class="text-emerald-400">Active (JSZip Engine)</span></span>
-      <span>•</span>
-      <span>→ Server Uploads: <span class="text-neutral-400">0 Bytes Sent</span></span>
-      <span>•</span>
-      <span>→ Privacy Audit: <span class="text-emerald-400">100% Local Browser Sandbox</span></span>
-    </div>
-  </div>
-
-  <!-- Header / Navigation -->
-  <header class="border-b border-neutral-900 bg-black/60 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
-    <div class="flex items-center space-x-3">
-      <div class="w-7 h-7 rounded-lg bg-neutral-900 border border-neutral-800 flex items-center justify-center">
-        <i data-lucide="archive" class="w-4 h-4 text-emerald-400"></i>
-      </div>
-      <span class="font-bold text-sm tracking-tight text-white font-mono">ZipVault</span>
-    </div>
-
-    <nav class="hidden md:flex items-center space-x-6 text-xs font-mono text-neutral-400">
-      <a href="#hero" class="hover:text-white transition-colors">Overview</a>
-      <a href="#terminal" class="hover:text-white transition-colors">Terminal</a>
-      <a href="#features" class="hover:text-white transition-colors">Features</a>
-      <a href="#specs" class="hover:text-white transition-colors">Architecture</a>
-    </nav>
-
-    <div class="flex items-center space-x-3">
-      <a href="/explorer" class="text-xs font-mono bg-white hover:bg-neutral-200 text-black font-medium px-4 py-2 rounded-md transition-all flex items-center gap-2">
-        Launch Workspace <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
-      </a>
-    </div>
-  </header>
-
-  <!-- Hero Section -->
-  <section id="hero" class="pt-20 pb-16 px-4 flex flex-col items-center text-center max-w-4xl mx-auto">
-    <!-- Top Pill -->
-    <div class="fade-up inline-flex items-center gap-2 px-3 py-1 bg-neutral-950 border border-neutral-800 rounded-full text-[11px] font-mono text-neutral-400 mb-8">
-      <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-      <span>// ZERO-SERVER ARCHITECTURE</span>
-    </div>
-
-    <!-- Giant Headline -->
-    <h1 class="fade-up text-4xl sm:text-6xl font-black tracking-tight text-white uppercase leading-[1.05] mb-6">
-      Inspect Archives. <br/>
-      <span class="text-neutral-500">Without Uploading A Byte.</span>
-    </h1>
-
-    <p class="fade-up text-neutral-400 text-sm sm:text-base max-w-2xl font-normal leading-relaxed mb-8">
-      ZipVault parses, renders, and extracts `.ZIP` structures 100% locally in your browser memory. No backend storage, no tracking, complete data privacy.
-    </p>
-
-    <!-- CTAs -->
-    <div class="fade-up flex items-center gap-4">
-      <a href="/explorer" class="bg-white text-black hover:bg-neutral-200 font-mono text-xs font-semibold px-6 py-3 rounded-md transition-all flex items-center gap-2">
-        <i data-lucide="terminal" class="w-4 h-4"></i>
-        Open Workspace
-      </a>
-      <a href="/api/health" target="_blank" class="bg-neutral-950 border border-neutral-800 text-neutral-300 hover:text-white hover:border-neutral-700 font-mono text-xs font-medium px-5 py-3 rounded-md transition-all">
-        Check Health API →
-      </a>
-    </div>
-  </section>
-
-  <!-- Interactive Terminal Boot Sequence Box -->
-  <section id="terminal" class="px-4 py-8 max-w-3xl mx-auto w-full">
-    <div class="fade-up rounded-xl border border-neutral-800 bg-neutral-950/80 backdrop-blur p-4 font-mono text-xs shadow-2xl">
-      <!-- Window Controls Header -->
+  <!-- ========================================== -->
+  <!-- 1. FULL-SCREEN INITIAL TERMINAL BOOT SPLASH -->
+  <!-- ========================================== -->
+  <div id="loaderSplash" class="fixed inset-0 z-[100] bg-black flex items-center justify-center p-4">
+    <div class="w-full max-w-2xl rounded-xl border border-neutral-800 bg-neutral-950 p-5 font-mono text-xs shadow-2xl">
+      <!-- Window Bar -->
       <div class="flex items-center justify-between border-b border-neutral-900 pb-3 mb-4">
         <div class="flex items-center gap-2">
           <span class="w-2.5 h-2.5 rounded-full bg-red-500/80 inline-block"></span>
@@ -129,93 +58,163 @@
       </div>
 
       <!-- Animated Logs Container -->
-      <div id="terminalBody" class="space-y-2 min-h-[160px] text-neutral-400 leading-relaxed">
-        <!-- JS injects lines here -->
+      <div id="terminalBody" class="space-y-2.5 min-h-[160px] text-neutral-400 leading-relaxed">
+        <!-- Lines injected dynamically -->
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- Feature Grid Cards -->
-  <section id="features" class="py-16 px-4 max-w-5xl mx-auto w-full">
-    <div class="text-center mb-12">
-      <span class="text-[10px] font-mono text-neutral-500 uppercase tracking-widest">// SYSTEM CAPABILITIES</span>
-      <h2 class="text-2xl font-bold text-white tracking-tight mt-1">Built for speed & absolute privacy</h2>
+  <!-- ========================================== -->
+  <!-- 2. MAIN DASHBOARD CONTENT (Initially Hidden) -->
+  <!-- ========================================== -->
+  <div id="appContent" class="opacity-0 transition-opacity duration-700 flex flex-col min-h-screen">
+    
+    <!-- Scrolling Top Status Bar -->
+    <div class="w-full border-b border-neutral-900 bg-neutral-950/80 backdrop-blur text-[11px] font-mono text-neutral-500 overflow-hidden whitespace-nowrap py-1.5 flex items-center">
+      <div class="animate-marquee flex items-center gap-8">
+        <span class="flex items-center gap-2">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span class="text-neutral-400">ZipVault Core:</span> v1.0.0 Online
+        </span>
+        <span>•</span>
+        <span>→ Client Memory Processing: <span class="text-emerald-400">Active (JSZip Engine)</span></span>
+        <span>•</span>
+        <span>→ Server Uploads: <span class="text-neutral-400">0 Bytes Sent</span></span>
+        <span>•</span>
+        <span>→ Privacy Audit: <span class="text-emerald-400">100% Local Browser Sandbox</span></span>
+        <span>•</span>
+        <span class="flex items-center gap-2">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span class="text-neutral-400">ZipVault Core:</span> v1.0.0 Online
+        </span>
+        <span>•</span>
+        <span>→ Client Memory Processing: <span class="text-emerald-400">Active (JSZip Engine)</span></span>
+        <span>•</span>
+        <span>→ Server Uploads: <span class="text-neutral-400">0 Bytes Sent</span></span>
+        <span>•</span>
+        <span>→ Privacy Audit: <span class="text-emerald-400">100% Local Browser Sandbox</span></span>
+      </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <!-- Card 1 -->
-      <div class="fade-up bg-neutral-950 border border-neutral-900 hover:border-neutral-800 p-6 rounded-xl transition-all group">
-        <div class="w-9 h-9 rounded-lg bg-neutral-900 border border-neutral-800 flex items-center justify-center mb-4 text-emerald-400 group-hover:border-emerald-500/30 transition-colors">
-          <i data-lucide="cpu" class="w-4 h-4"></i>
+    <!-- Navigation Header -->
+    <header class="border-b border-neutral-900 bg-black/60 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-7 h-7 rounded-lg bg-neutral-900 border border-neutral-800 flex items-center justify-center">
+          <i data-lucide="archive" class="w-4 h-4 text-emerald-400"></i>
         </div>
-        <h3 class="text-white text-sm font-bold font-mono mb-2">Browser-Native JSZip</h3>
-        <p class="text-neutral-500 text-xs leading-relaxed">Unpacking occurs entirely via Web Assembly & JS memory buffers. Zero network latency.</p>
+        <span class="font-bold text-sm tracking-tight text-white font-mono">ZipVault</span>
       </div>
 
-      <!-- Card 2 -->
-      <div class="fade-up bg-neutral-950 border border-neutral-900 hover:border-neutral-800 p-6 rounded-xl transition-all group">
-        <div class="w-9 h-9 rounded-lg bg-neutral-900 border border-neutral-800 flex items-center justify-center mb-4 text-emerald-400 group-hover:border-emerald-500/30 transition-colors">
-          <i data-lucide="shield-check" class="w-4 h-4"></i>
+      <nav class="hidden md:flex items-center space-x-6 text-xs font-mono text-neutral-400">
+        <a href="#hero" class="hover:text-white transition-colors">Overview</a>
+        <a href="#features" class="hover:text-white transition-colors">Features</a>
+        <a href="#specs" class="hover:text-white transition-colors">Architecture</a>
+      </nav>
+
+      <div class="flex items-center space-x-3">
+        <a href="/explorer" class="text-xs font-mono bg-white hover:bg-neutral-200 text-black font-medium px-4 py-2 rounded-md transition-all flex items-center gap-2">
+          Launch Workspace <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+        </a>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero" class="pt-24 pb-16 px-4 flex flex-col items-center text-center max-w-4xl mx-auto flex-1">
+      <div class="fade-in inline-flex items-center gap-2 px-3 py-1 bg-neutral-950 border border-neutral-800 rounded-full text-[11px] font-mono text-neutral-400 mb-8">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+        <span>// ZERO-SERVER ARCHITECTURE</span>
+      </div>
+
+      <h1 class="fade-in text-4xl sm:text-6xl font-black tracking-tight text-white uppercase leading-[1.05] mb-6">
+        Inspect Archives. <br/>
+        <span class="text-neutral-500">Without Uploading A Byte.</span>
+      </h1>
+
+      <p class="fade-in text-neutral-400 text-sm sm:text-base max-w-2xl font-normal leading-relaxed mb-8">
+        ZipVault parses, renders, and extracts `.ZIP` structures 100% locally in your browser memory. No backend storage, no tracking, complete data privacy.
+      </p>
+
+      <div class="fade-in flex items-center gap-4">
+        <a href="/explorer" class="bg-white text-black hover:bg-neutral-200 font-mono text-xs font-semibold px-6 py-3 rounded-md transition-all flex items-center gap-2">
+          <i data-lucide="terminal" class="w-4 h-4"></i>
+          Open Workspace
+        </a>
+        <a href="/api/health" target="_blank" class="bg-neutral-950 border border-neutral-800 text-neutral-300 hover:text-white hover:border-neutral-700 font-mono text-xs font-medium px-5 py-3 rounded-md transition-all">
+          Check Health API →
+        </a>
+      </div>
+    </section>
+
+    <!-- Feature Grid Cards -->
+    <section id="features" class="py-16 px-4 max-w-5xl mx-auto w-full">
+      <div class="text-center mb-12">
+        <span class="text-[10px] font-mono text-neutral-500 uppercase tracking-widest">// SYSTEM CAPABILITIES</span>
+        <h2 class="text-2xl font-bold text-white tracking-tight mt-1">Built for speed & absolute privacy</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="fade-in bg-neutral-950 border border-neutral-900 hover:border-neutral-800 p-6 rounded-xl transition-all group">
+          <div class="w-9 h-9 rounded-lg bg-neutral-900 border border-neutral-800 flex items-center justify-center mb-4 text-emerald-400 group-hover:border-emerald-500/30 transition-colors">
+            <i data-lucide="cpu" class="w-4 h-4"></i>
+          </div>
+          <h3 class="text-white text-sm font-bold font-mono mb-2">Browser-Native JSZip</h3>
+          <p class="text-neutral-500 text-xs leading-relaxed">Unpacking occurs entirely via Web Assembly & JS memory buffers. Zero network latency.</p>
         </div>
-        <h3 class="text-white text-sm font-bold font-mono mb-2">Zero Remote Uploads</h3>
-        <p class="text-neutral-500 text-xs leading-relaxed">Your files never touch any external server or backend disk. Ideal for sensitive code & archives.</p>
-      </div>
 
-      <!-- Card 3 -->
-      <div class="fade-up bg-neutral-950 border border-neutral-900 hover:border-neutral-800 p-6 rounded-xl transition-all group">
-        <div class="w-9 h-9 rounded-lg bg-neutral-900 border border-neutral-800 flex items-center justify-center mb-4 text-emerald-400 group-hover:border-emerald-500/30 transition-colors">
-          <i data-lucide="eye" class="w-4 h-4"></i>
+        <div class="fade-in bg-neutral-950 border border-neutral-900 hover:border-neutral-800 p-6 rounded-xl transition-all group">
+          <div class="w-9 h-9 rounded-lg bg-neutral-900 border border-neutral-800 flex items-center justify-center mb-4 text-emerald-400 group-hover:border-emerald-500/30 transition-colors">
+            <i data-lucide="shield-check" class="w-4 h-4"></i>
+          </div>
+          <h3 class="text-white text-sm font-bold font-mono mb-2">Zero Remote Uploads</h3>
+          <p class="text-neutral-500 text-xs leading-relaxed">Your files never touch any external server or backend disk. Ideal for sensitive code & archives.</p>
         </div>
-        <h3 class="text-white text-sm font-bold font-mono mb-2">Instant Previews</h3>
-        <p class="text-neutral-500 text-xs leading-relaxed">Inspect code syntax, JSON structures, and image assets without extracting the full ZIP file.</p>
-      </div>
-    </div>
-  </section>
 
-  <!-- Architecture Specs Bar -->
-  <section id="specs" class="py-12 border-t border-neutral-900 bg-neutral-950/40 px-4">
-    <div class="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center font-mono">
-      <div>
-        <div class="text-[10px] text-neutral-600 uppercase">Engine</div>
-        <div class="text-sm font-semibold text-neutral-200 mt-1">JSZip v3.10</div>
+        <div class="fade-in bg-neutral-950 border border-neutral-900 hover:border-neutral-800 p-6 rounded-xl transition-all group">
+          <div class="w-9 h-9 rounded-lg bg-neutral-900 border border-neutral-800 flex items-center justify-center mb-4 text-emerald-400 group-hover:border-emerald-500/30 transition-colors">
+            <i data-lucide="eye" class="w-4 h-4"></i>
+          </div>
+          <h3 class="text-white text-sm font-bold font-mono mb-2">Instant Previews</h3>
+          <p class="text-neutral-500 text-xs leading-relaxed">Inspect code syntax, JSON structures, and image assets without extracting the full ZIP file.</p>
+        </div>
       </div>
-      <div>
-        <div class="text-[10px] text-neutral-600 uppercase">Server Target</div>
-        <div class="text-sm font-semibold text-neutral-200 mt-1">Vercel Serverless</div>
-      </div>
-      <div>
-        <div class="text-[10px] text-neutral-600 uppercase">Styling</div>
-        <div class="text-sm font-semibold text-neutral-200 mt-1">Tailwind CSS</div>
-      </div>
-      <div>
-        <div class="text-[10px] text-neutral-600 uppercase">Latency</div>
-        <div class="text-sm font-semibold text-emerald-400 mt-1">0 ms (Local)</div>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Footer -->
-  <footer class="mt-auto border-t border-neutral-900 py-6 px-6 text-center text-[11px] font-mono text-neutral-600">
-    ZipVault Core Engine • Built with Express & EJS
-  </footer>
+    <!-- Specs Bar -->
+    <section id="specs" class="py-12 border-t border-neutral-900 bg-neutral-950/40 px-4">
+      <div class="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center font-mono">
+        <div>
+          <div class="text-[10px] text-neutral-600 uppercase">Engine</div>
+          <div class="text-sm font-semibold text-neutral-200 mt-1">JSZip v3.10</div>
+        </div>
+        <div>
+          <div class="text-[10px] text-neutral-600 uppercase">Server Target</div>
+          <div class="text-sm font-semibold text-neutral-200 mt-1">Vercel Serverless</div>
+        </div>
+        <div>
+          <div class="text-[10px] text-neutral-600 uppercase">Styling</div>
+          <div class="text-sm font-semibold text-neutral-200 mt-1">Tailwind CSS</div>
+        </div>
+        <div>
+          <div class="text-[10px] text-neutral-600 uppercase">Latency</div>
+          <div class="text-sm font-semibold text-emerald-400 mt-1">0 ms (Local)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="mt-auto border-t border-neutral-900 py-6 px-6 text-center text-[11px] font-mono text-neutral-600">
+      ZipVault Core Engine • Built with Express & EJS
+    </footer>
+  </div>
 
   <!-- Scripts -->
   <script>
     lucide.createIcons();
 
-    // Trigger Scroll Fade-In Animations
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
-
-    // Simulated Terminal Boot Animation
+    const loaderSplash = document.getElementById('loaderSplash');
+    const appContent = document.getElementById('appContent');
     const terminalBody = document.getElementById('terminalBody');
+
     const logs = [
       { text: '$ zipvault-engine --init', color: 'text-emerald-400' },
       { text: '[systemd] Mounting client-side memory virtual disk...', color: 'text-neutral-400' },
@@ -225,21 +224,39 @@
     ];
 
     let lineIndex = 0;
+
     function typeNextLine() {
       if (lineIndex < logs.length) {
         const line = document.createElement('div');
-        line.className = `${logs[lineIndex].color} opacity-0 transition-opacity duration-300 flex items-center gap-2`;
+        line.className = `${logs[lineIndex].color} opacity-0 transition-opacity duration-200 flex items-center gap-2`;
         line.innerHTML = `<span class="text-neutral-700">›</span> ${logs[lineIndex].text}`;
         terminalBody.appendChild(line);
 
-        setTimeout(() => line.classList.remove('opacity-0'), 50);
+        setTimeout(() => line.classList.remove('opacity-0'), 40);
         lineIndex++;
-        setTimeout(typeNextLine, 350);
+        setTimeout(typeNextLine, 280);
+      } else {
+        // Boot sequence complete: Fade out loader and reveal dashboard
+        setTimeout(() => {
+          loaderSplash.classList.add('fade-out');
+          
+          setTimeout(() => {
+            loaderSplash.style.display = 'none';
+            appContent.classList.remove('opacity-0');
+
+            // Trigger element fade-in transitions
+            document.querySelectorAll('.fade-in').forEach((el, idx) => {
+              setTimeout(() => el.classList.add('visible'), idx * 80);
+            });
+          }, 600);
+        }, 500);
       }
     }
 
-    // Start terminal boot sequence on load
-    setTimeout(typeNextLine, 400);
+    // Start boot sequence after page load
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(typeNextLine, 300);
+    });
   </script>
 </body>
 </html>
