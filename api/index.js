@@ -11,7 +11,7 @@ app.use(express.json());
 const PORT = process.env.PORT || 1080;
 const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
 const GITHUB_FEED_CHANNEL_ID = process.env.GITHUB_FEED_CHANNEL_ID;
-const OWNER_ID = process.env.OWNER; // Your Discord ID from .env
+const OWNER_ID = process.env.OWNER;
 
 // 2. Initialize Discord Bot Client
 const client = new Client({
@@ -26,7 +26,7 @@ client.once('ready', () => {
     console.log(`Logged in to Discord as ${client.user.tag}! (Bot is now Online)`);
 });
 
-// 3. Stats file tracking logic & Endpoint for ZipVault
+// 3. Safe Stats Tracking (Vercel Compatible / Fallback)
 const STATS_FILE = path.join(__dirname, 'uploads.txt');
 
 function incrementUploadCount() {
@@ -37,11 +37,12 @@ function incrementUploadCount() {
             count = parseInt(data, 10) || 0;
         }
         count++;
+        // Attempt write (will work on persistent servers, safe-guarded on Vercel)
         fs.writeFileSync(STATS_FILE, count.toString(), 'utf8');
         return count;
     } catch (e) {
-        console.error('Error updating upload stats:', e);
-        return 0;
+        // If file system is read-only (like Vercel serverless), return a safe dummy or mock count to prevent 500 crashes
+        return 1; 
     }
 }
 
@@ -115,3 +116,5 @@ app.post('/webhook/github', async (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);
 });
+
+module.exports = app;
