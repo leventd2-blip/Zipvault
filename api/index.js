@@ -1,26 +1,33 @@
-const express = require('express');
-const path = require('path');
-const cors = require('cors');
-const fs = require('fs');
 require('dotenv').config();
+const { Client, GatewayIntentBits } = require('discord.js');
+const express = require('express');
+const fs = require('fs');
+const path = require('path');
 
+// 1. Initialize Express Web Server
 const app = express();
-const PORT = process.env.PORT || 3000;
-
-// Middleware
-app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-// View engine setup
-app.set('views', path.join(__dirname, '../views'));
-app.set('view engine', 'ejs');
+const PORT = process.env.PORT || 1080;
+const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
+const GITHUB_FEED_CHANNEL_ID = process.env.GITHUB_FEED_CHANNEL_ID;
+const OWNER_ID = process.env.OWNER; // Your Discord ID from .env
 
-// Static assets
-app.use(express.static(path.join(__dirname, '../public')));
+// 2. Initialize Discord Bot Client
+const client = new Client({
+    intents: [
+        GatewayIntentBits.Guilds, 
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent
+    ]
+});
 
-// Stats file tracking path (Saves only total count number)
-const STATS_FILE = path.join(__dirname, '../uploads.txt');
+client.once('ready', () => {
+    console.log(`Logged in to Discord as ${client.user.tag}! (Bot is now Online)`);
+});
+
+// 3. Stats file tracking logic & Endpoint for ZipVault
+const STATS_FILE = path.join(__dirname, 'uploads.txt');
 
 function incrementUploadCount() {
     try {
@@ -38,39 +45,73 @@ function incrementUploadCount() {
     }
 }
 
-// Routes
-app.get('/', (req, res) => {
-  res.render('index');
-});
-
-app.get('/explorer', (req, res) => {
-  res.render('explorer');
-});
-
-// Endpoint to increment and fetch total anonymous upload stats
 app.post('/api/track-upload', (req, res) => {
-  const total = incrementUploadCount();
-  res.json({ success: true, totalUploads: total });
+    const total = incrementUploadCount();
+    res.json({ success: true, totalUploads: total });
 });
 
-app.get('/api/health', (req, res) => {
-  const memoryUsage = process.memoryUsage();
-  res.json({
-    status: 'online',
-    app: 'ZipVault',
-    environment: process.env.NODE_ENV || 'development',
-    uptimeSeconds: Math.floor(process.uptime()),
-    memory: {
-      rss: `${Math.round(memoryUsage.rss / 1024 / 1024)} MB`,
-      heapTotal: `${Math.round(memoryUsage.heapTotal / 1024 / 1024)} MB`,
-      heapUsed: `${Math.round(memoryUsage.heapUsed / 1024 / 1024)} MB`
-    },
-    timestamp: new Date().toISOString()
-  });
+// 4. Discord Message Command Handler (Owner Only)
+client.on('messageCreate', async (message) => {
+    if (message.author.bot) return;
+
+    if (message.content === 'Z!totalfiles') {
+        if (message.author.id !== OWNER_ID) {
+            return message.reply("❌ You do not have permission to use this command.");
+        }
+
+        let totalUploads = 0;
+        try {
+            if (fs.existsSync(STATS_FILE)) {
+                const data = fs.readFileSync(STATS_FILE, 'utf8').trim();
+                totalUploads = parseInt(data, 10) || 0;
+            }
+        } catch (err) {
+            console.error('Failed to read uploads.txt stats:', err);
+        }
+
+        message.reply(`📦 **ZipVault Global Stats:** Total archives inspected: **${totalUploads}**`);
+    }
+});
+
+client.login(DISCORD_BOT_TOKEN);
+
+// 5. GitHub Webhook Route
+app.post('/webhook/github', async (req, res) => {
+    const event = req.headers['x-github-event'];
+    const data = req.body;
+
+    if (event === 'push') {
+        const repoName = data.repository.name;
+        const pusher = data.pusher.name;
+        const branch = data.ref.split('/').pop();
+        const commits = data.commits;
+
+        const embed = {
+            title: `⚡ [${repoName}:${branch}] ${commits.length} new commit(s)`,
+            description: `> Pushed by **${pusher}**`,
+            color: 1081344,
+            fields: commits.slice(0, 5).map(c => ({
+                name: `[\`${c.id.substring(0, 7)}\`](${c.url})`,
+                value: `> ${c.message.split('\n')[0]}`
+            })),
+            footer: {
+                text: "ZipVault GitHub Feed"
+            }
+        };
+
+        try {
+            const channel = await client.channels.fetch(GITHUB_FEED_CHANNEL_ID);
+            if (channel) {
+                await channel.send({ embeds: [embed] });
+            }
+        } catch (error) {
+            console.error('Failed to send webhook to Discord:', error);
+        }
+    }
+
+    res.status(200).send('Webhook received successfully');
 });
 
 app.listen(PORT, () => {
-  console.log(`ZipVault running on http://localhost:${PORT}`);
+    console.log(`Server listening on port ${PORT}`);
 });
-
-module.exports = app;
