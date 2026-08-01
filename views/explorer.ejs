@@ -29,33 +29,28 @@
       <span class="text-[11px] font-medium uppercase tracking-wider text-zinc-500">Workspace</span>
     </div>
 
-    <!-- Header Archive Meta / ZipVault Analysis Result Layout -->
-    <div id="archiveMeta" class="hidden flex items-center bg-zinc-900 border border-zinc-800 rounded-full px-3 py-1.5 shadow-inner text-xs font-medium gap-3">
-      <div class="flex items-center gap-1.5 text-zinc-300 font-semibold border-r border-zinc-800 pr-3">
-        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-        <span>ZipVault Analysis Result</span>
+    <!-- Header Archive Meta -->
+    <div id="archiveMeta" class="hidden flex items-center bg-zinc-900 border border-zinc-800 rounded-full px-1 py-1 shadow-inner text-xs font-medium">
+      <div class="flex items-center gap-1.5 bg-zinc-800 px-3 py-1 rounded-full text-zinc-200">
+        <i data-lucide="file-archive" class="w-3.5 h-3.5 text-indigo-400"></i>
+        <span id="archiveName" class="truncate max-w-[150px]">archive.zip</span>
       </div>
-      <div class="flex items-center gap-3 text-zinc-400">
-        <div class="flex items-center gap-1">
-          <span class="text-zinc-500">Status:</span>
-          <span class="text-emerald-400 font-medium">Analyzed successfully</span>
+      <div class="px-4 flex items-center gap-3 text-zinc-400">
+        <div class="flex items-center gap-1.5">
+          <i data-lucide="hard-drive" class="w-3.5 h-3.5 opacity-70"></i>
+          <span id="archiveSize">0 KB</span>
         </div>
         <div class="w-1 h-1 rounded-full bg-zinc-700"></div>
-        <div class="flex items-center gap-1">
-          <span class="text-zinc-500">Files:</span>
-          <span id="archiveEntries" class="text-zinc-200">0</span>
-        </div>
-        <div class="w-1 h-1 rounded-full bg-zinc-700"></div>
-        <div class="flex items-center gap-1">
-          <span class="text-zinc-500">Size:</span>
-          <span id="archiveSize" class="text-zinc-200">0 KB</span>
+        <div class="flex items-center gap-1.5">
+          <i data-lucide="files" class="w-3.5 h-3.5 opacity-70"></i>
+          <span id="archiveEntries">0</span>
         </div>
       </div>
     </div>
   </header>
 
   <!-- Main IDE Layout -->
-  <main class="flex-1 flex overflow-hidden bg-zinc-950">
+  <main class="flex-1 flex overflow-hidden bg-zinc-950 relative">
     
     <!-- Left Sidebar -->
     <aside class="w-72 border-r border-zinc-800 bg-zinc-900/40 flex flex-col flex-shrink-0 relative z-0">
@@ -121,6 +116,27 @@
       </div>
       
     </section>
+
+    <!-- Upload Success Modal Overlay -->
+    <div id="uploadSuccessModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-6 max-w-md w-full shadow-2xl text-center space-y-4">
+        <div class="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mx-auto text-emerald-400">
+          <i data-lucide="check-circle-2" class="w-6 h-6"></i>
+        </div>
+        <div class="space-y-1">
+          <h3 class="text-base font-bold text-zinc-100 tracking-wide">UPLOAD SUCCESSFUL</h3>
+          <p id="modalSuccessText" class="text-xs text-zinc-400 leading-relaxed">
+            ZipVault successfully detected 0 files and 0 folders.
+          </p>
+        </div>
+        <button 
+          id="closeModalBtn" 
+          class="w-full bg-indigo-500 hover:bg-indigo-400 text-white font-medium py-2 rounded-lg text-xs transition-all shadow-sm cursor-pointer"
+        >
+          Continue
+        </button>
+      </div>
+    </div>
 
   </main>
 

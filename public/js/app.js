@@ -5,12 +5,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const zipInput = document.getElementById('zipInput');
   const fileTree = document.getElementById('fileTree');
   const archiveMeta = document.getElementById('archiveMeta');
+  const archiveName = document.getElementById('archiveName');
   const archiveSize = document.getElementById('archiveSize');
   const archiveEntries = document.getElementById('archiveEntries');
   const previewPath = document.getElementById('previewPath');
   const previewArea = document.getElementById('previewArea');
   const extractBtn = document.getElementById('extractBtn');
   const treeSearch = document.getElementById('treeSearch');
+  
+  // Modal Elements
+  const uploadSuccessModal = document.getElementById('uploadSuccessModal');
+  const modalSuccessText = document.getElementById('modalSuccessText');
+  const closeModalBtn = document.getElementById('closeModalBtn');
 
   let currentZipFiles = {};
   let selectedFileEntry = null;
@@ -43,9 +49,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Close modal event
+  closeModalBtn.addEventListener('click', () => {
+    uploadSuccessModal.classList.add('hidden');
+  });
+
   async function handleZipFile(file) {
     try {
-      const startTime = performance.now();
+      archiveName.textContent = file.name;
       archiveSize.textContent = `${(file.size / 1024).toFixed(1)} KB`;
       archiveMeta.classList.remove('hidden');
 
@@ -54,14 +65,22 @@ document.addEventListener('DOMContentLoaded', () => {
       currentZipFiles = content.files;
 
       let fileCount = 0;
+      let folderCount = 0;
+      
       Object.keys(currentZipFiles).forEach((filename) => {
-        if (!currentZipFiles[filename].dir) fileCount++;
+        if (currentZipFiles[filename].dir) {
+          folderCount++;
+        } else {
+          fileCount++;
+        }
       });
+
       archiveEntries.textContent = fileCount;
 
-      const endTime = performance.now();
-      const durationSeconds = ((endTime - startTime) / 1000).toFixed(2);
-      console.log(`ZipVault Analysis completed in ${durationSeconds} seconds.`);
+      // Update modal text with counts and show modal
+      modalSuccessText.textContent = `ZipVault successfully detected ${fileCount} files and ${folderCount} folders.`;
+      uploadSuccessModal.classList.remove('hidden');
+      lucide.createIcons();
 
       buildAndRenderTree(currentZipFiles);
     } catch (err) {
