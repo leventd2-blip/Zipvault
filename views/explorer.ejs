@@ -29,21 +29,26 @@
       <span class="text-[11px] font-medium uppercase tracking-wider text-zinc-500">Workspace</span>
     </div>
 
-    <!-- Header Archive Meta -->
-    <div id="archiveMeta" class="hidden flex items-center bg-zinc-900 border border-zinc-800 rounded-full px-1 py-1 shadow-inner text-xs font-medium">
-      <div class="flex items-center gap-1.5 bg-zinc-800 px-3 py-1 rounded-full text-zinc-200">
-        <i data-lucide="file-archive" class="w-3.5 h-3.5 text-indigo-400"></i>
-        <span id="archiveName" class="truncate max-w-[150px]">archive.zip</span>
+    <!-- Header Archive Meta / ZipVault Analysis Result Layout -->
+    <div id="archiveMeta" class="hidden flex items-center bg-zinc-900 border border-zinc-800 rounded-full px-3 py-1.5 shadow-inner text-xs font-medium gap-3">
+      <div class="flex items-center gap-1.5 text-zinc-300 font-semibold border-r border-zinc-800 pr-3">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span>ZipVault Analysis Result</span>
       </div>
-      <div class="px-4 flex items-center gap-3 text-zinc-400">
-        <div class="flex items-center gap-1.5">
-          <i data-lucide="hard-drive" class="w-3.5 h-3.5 opacity-70"></i>
-          <span id="archiveSize">0 KB</span>
+      <div class="flex items-center gap-3 text-zinc-400">
+        <div class="flex items-center gap-1">
+          <span class="text-zinc-500">Status:</span>
+          <span class="text-emerald-400 font-medium">Analyzed successfully</span>
         </div>
         <div class="w-1 h-1 rounded-full bg-zinc-700"></div>
-        <div class="flex items-center gap-1.5">
-          <i data-lucide="files" class="w-3.5 h-3.5 opacity-70"></i>
-          <span id="archiveEntries">0</span>
+        <div class="flex items-center gap-1">
+          <span class="text-zinc-500">Files:</span>
+          <span id="archiveEntries" class="text-zinc-200">0</span>
+        </div>
+        <div class="w-1 h-1 rounded-full bg-zinc-700"></div>
+        <div class="flex items-center gap-1">
+          <span class="text-zinc-500">Size:</span>
+          <span id="archiveSize" class="text-zinc-200">0 KB</span>
         </div>
       </div>
     </div>

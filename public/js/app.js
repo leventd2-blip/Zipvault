@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const zipInput = document.getElementById('zipInput');
   const fileTree = document.getElementById('fileTree');
   const archiveMeta = document.getElementById('archiveMeta');
-  const archiveName = document.getElementById('archiveName');
   const archiveSize = document.getElementById('archiveSize');
   const archiveEntries = document.getElementById('archiveEntries');
   const previewPath = document.getElementById('previewPath');
@@ -46,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function handleZipFile(file) {
     try {
-      archiveName.textContent = file.name;
+      const startTime = performance.now();
       archiveSize.textContent = `${(file.size / 1024).toFixed(1)} KB`;
       archiveMeta.classList.remove('hidden');
 
@@ -59,6 +58,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!currentZipFiles[filename].dir) fileCount++;
       });
       archiveEntries.textContent = fileCount;
+
+      const endTime = performance.now();
+      const durationSeconds = ((endTime - startTime) / 1000).toFixed(2);
+      console.log(`ZipVault Analysis completed in ${durationSeconds} seconds.`);
 
       buildAndRenderTree(currentZipFiles);
     } catch (err) {
