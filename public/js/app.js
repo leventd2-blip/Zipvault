@@ -18,9 +18,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalSuccessText = document.getElementById('modalSuccessText');
   const closeModalBtn = document.getElementById('closeModalBtn');
 
+  // Stats Dashboard Elements
+  const viewExtraInfoBtn = document.getElementById('viewExtraInfoBtn');
+  const statsModal = document.getElementById('statsModal');
+  const closeStatsBtn = document.getElementById('closeStatsBtn');
+  const closeStatsFooterBtn = document.getElementById('closeStatsFooterBtn');
+  const statFilesCount = document.getElementById('statFilesCount');
+  const statFoldersCount = document.getElementById('statFoldersCount');
+  const statCompressedSize = document.getElementById('statCompressedSize');
+  const statLargestFiles = document.getElementById('statLargestFiles');
+
   let currentZipFiles = {};
   let selectedFileEntry = null;
   let selectedFileName = '';
+  let archiveStatsData = { files: 0, folders: 0, sizeText: '0 KB', largest: [] };
 
   // Trigger file browser on dropzone click
   dropZone.addEventListener('click', () => zipInput.click());
@@ -49,17 +60,50 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Close modal event
+  // Modal event controls
   closeModalBtn.addEventListener('click', () => {
     uploadSuccessModal.classList.add('hidden');
   });
+
+  viewExtraInfoBtn.addEventListener('click', () => {
+    openStatsDashboard();
+  });
+
+  closeStatsBtn.addEventListener('click', () => {
+    statsModal.classList.add('hidden');
+  });
+
+  closeStatsFooterBtn.addEventListener('click', () => {
+    statsModal.classList.add('hidden');
+  });
+
+  function openStatsDashboard() {
+    statFilesCount.textContent = archiveStatsData.files;
+    statFoldersCount.textContent = archiveStatsData.folders;
+    statCompressedSize.textContent = archiveStatsData.sizeText;
+
+    if (archiveStatsData.largest.length > 0) {
+      statLargestFiles.innerHTML = archiveStatsData.largest.map(file => `
+        <div class="flex items-center justify-between py-1 border-b border-zinc-800/40 last:border-0">
+          <span class="text-zinc-300 truncate max-w-[300px]">${file.name}</span>
+          <span class="text-indigo-400 font-medium">${file.size}</span>
+        </div>
+      `).join('');
+    } else {
+      statLargestFiles.innerHTML = `<p class="text-zinc-600 text-center py-2">No file metrics available.</p>`;
+    }
+
+    statsModal.classList.remove('hidden');
+    lucide.createIcons();
+  }
 
   async function handleZipFile(file) {
     try {
       const startTime = performance.now();
 
       archiveName.textContent = file.name;
-      archiveSize.textContent = `${(file.size / 1024).toFixed(1)} KB`;
+      const formattedSize = `${(file.size / 1024).toFixed(1)} KB`;
+      archiveSize.textContent = formattedSize;
       archiveMeta.classList.remove('hidden');
 
       const zip = new JSZip();
@@ -68,21 +112,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
       let fileCount = 0;
       let folderCount = 0;
-      
-      Object.keys(currentZipFiles).forEach((filename) => {
-        if (currentZipFiles[filename].dir) {
+      let fileSizesList = [];
+
+      // Loop and inspect all items asynchronously to collect sizing data
+      for (const filename of Object.keys(currentZipFiles)) {
+        const entry = currentZipFiles[filename];
+        if (entry.dir) {
           folderCount++;
         } else {
           fileCount++;
+          try {
+            // Attempt to get uncompressed size from entry if available, fallback to blob length
+            const blob = await entry.async('blob');
+            fileSizesList.push({ name: filename, sizeBytes: blob.size, size: `${(blob.size / 1024).toFixed(1)} KB` });
+          } catch (e) {
+            fileSizesList.push({ name: filename, sizeBytes: 0, size: '0 KB' });
+          }
         }
-      });
+      }
+
+      // Sort files by size descending to find the largest items
+      fileSizesList.sort((a, b) => b.sizeBytes - a.sizeBytes);
 
       archiveEntries.textContent = fileCount;
+
+      // Store stats data for dashboard modal
+      archiveStatsData = {
+        files: fileCount,
+        folders: folderCount,
+        sizeText: formattedSize,
+        largest: fileSizesList.slice(0, 5) // Top 5 largest files
+      };
 
       const endTime = performance.now();
       const durationSeconds = ((endTime - startTime) / 1000).toFixed(2);
 
-      // Update modal text with counts and seconds, then show modal
       modalSuccessText.textContent = `ZipVault successfully detected ${fileCount} files and ${folderCount} folders in ${durationSeconds} seconds.`;
       uploadSuccessModal.classList.remove('hidden');
       lucide.createIcons();
