@@ -84,9 +84,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (archiveStatsData.largest.length > 0) {
       statLargestFiles.innerHTML = archiveStatsData.largest.map(file => `
-        <div class="flex items-center justify-between py-1 border-b border-zinc-800/40 last:border-0">
-          <span class="text-zinc-300 truncate max-w-[300px]">${file.name}</span>
-          <span class="text-indigo-400 font-medium">${file.size}</span>
+        <div class="flex items-center justify-between py-1.5 border-b border-zinc-800/40 last:border-0">
+          <span class="text-zinc-300 truncate max-w-[280px]">${file.name}</span>
+          <span class="text-indigo-400 font-semibold">${file.size}</span>
         </div>
       `).join('');
     } else {
@@ -114,7 +114,6 @@ document.addEventListener('DOMContentLoaded', () => {
       let folderCount = 0;
       let fileSizesList = [];
 
-      // Loop and inspect all items asynchronously to collect sizing data
       for (const filename of Object.keys(currentZipFiles)) {
         const entry = currentZipFiles[filename];
         if (entry.dir) {
@@ -122,7 +121,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           fileCount++;
           try {
-            // Attempt to get uncompressed size from entry if available, fallback to blob length
             const blob = await entry.async('blob');
             fileSizesList.push({ name: filename, sizeBytes: blob.size, size: `${(blob.size / 1024).toFixed(1)} KB` });
           } catch (e) {
@@ -131,17 +129,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
 
-      // Sort files by size descending to find the largest items
       fileSizesList.sort((a, b) => b.sizeBytes - a.sizeBytes);
-
       archiveEntries.textContent = fileCount;
 
-      // Store stats data for dashboard modal
       archiveStatsData = {
         files: fileCount,
         folders: folderCount,
         sizeText: formattedSize,
-        largest: fileSizesList.slice(0, 5) // Top 5 largest files
+        largest: fileSizesList.slice(0, 5)
       };
 
       const endTime = performance.now();
@@ -209,12 +204,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (child.type === 'folder') {
         itemEl.innerHTML = `
-          <div class="folder-toggle flex items-center gap-1.5 py-1 px-2 hover:bg-zinc-800/60 rounded cursor-pointer text-zinc-300 transition-colors">
+          <div class="folder-toggle flex items-center gap-1.5 py-1.5 px-2 hover:bg-zinc-900 rounded-lg cursor-pointer text-zinc-300 transition-colors">
             <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-zinc-500 transition-transform duration-200"></i>
             <i data-lucide="folder" class="w-3.5 h-3.5 text-indigo-400"></i>
             <span class="truncate">${child.name}</span>
           </div>
-          <div class="folder-contents pl-4 hidden flex-col space-y-0.5 border-l border-zinc-800/50 ml-2 mt-0.5"></div>
+          <div class="folder-contents pl-4 hidden flex-col space-y-0.5 border-l border-zinc-800/60 ml-2 mt-0.5"></div>
         `;
         
         const toggleRow = itemEl.querySelector('.folder-toggle');
@@ -236,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderNode(child, contentsContainer);
       } else {
         itemEl.innerHTML = `
-          <div class="file-item flex items-center gap-1.5 py-1 px-2 hover:bg-indigo-500/10 hover:text-indigo-300 rounded cursor-pointer text-zinc-400 transition-colors">
+          <div class="file-item flex items-center gap-1.5 py-1.5 px-2 hover:bg-indigo-500/10 hover:text-indigo-300 rounded-lg cursor-pointer text-zinc-400 transition-colors">
             <i data-lucide="file" class="w-3.5 h-3.5 text-zinc-500 ml-5"></i>
             <span class="truncate">${child.name}</span>
           </div>
@@ -272,10 +267,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (imageExtensions.includes(ext)) {
         const blob = await entry.async('blob');
         const url = URL.createObjectURL(blob);
-        previewArea.innerHTML = `<img src="${url}" class="max-h-full max-w-full object-contain rounded border border-zinc-800 shadow-lg" alt="${path}" />`;
+        previewArea.innerHTML = `<img src="${url}" class="max-h-full max-w-full object-contain rounded-xl border border-zinc-800 shadow-xl" alt="${path}" />`;
       } else {
         const text = await entry.async('text');
-        previewArea.innerHTML = `<pre class="w-full h-full font-mono text-xs text-zinc-300 whitespace-pre-wrap overflow-auto">${escapeHtml(text)}</pre>`;
+        previewArea.innerHTML = `<pre class="w-full h-full font-mono text-xs text-zinc-300 whitespace-pre-wrap overflow-auto p-4">${escapeHtml(text)}</pre>`;
       }
     } catch (err) {
       previewArea.innerHTML = `<p class="text-rose-400 text-xs font-mono">Failed to load preview for this file format.</p>`;
