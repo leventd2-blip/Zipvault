@@ -56,6 +56,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function handleZipFile(file) {
     try {
+      const startTime = performance.now();
+
       archiveName.textContent = file.name;
       archiveSize.textContent = `${(file.size / 1024).toFixed(1)} KB`;
       archiveMeta.classList.remove('hidden');
@@ -77,8 +79,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       archiveEntries.textContent = fileCount;
 
-      // Update modal text with counts and show modal
-      modalSuccessText.textContent = `ZipVault successfully detected ${fileCount} files and ${folderCount} folders.`;
+      const endTime = performance.now();
+      const durationSeconds = ((endTime - startTime) / 1000).toFixed(2);
+
+      // Update modal text with counts and seconds, then show modal
+      modalSuccessText.textContent = `ZipVault successfully detected ${fileCount} files and ${folderCount} folders in ${durationSeconds} seconds.`;
       uploadSuccessModal.classList.remove('hidden');
       lucide.createIcons();
 
